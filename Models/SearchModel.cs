@@ -1,4 +1,6 @@
-﻿namespace Photon.Models
+﻿#pragma warning disable
+
+namespace Photon.Models
 {
     public class SearchModel
     {

@@ -8,7 +8,8 @@ namespace Photon.Services
         Task<List<Movie>?> GetMoviesAsync();
         Task<Movie?> GetMovieAsync(string id);
         Task CreateMoviesAsync(Movie[]? movies);
-        Task<List<Movie>?> GetMoviesAsync(SearchModel model);
+        Task<List<Movie>?> GetMoviesAsync(SearchModel model, int? page);
+        Task<int> GetMoviesCountAsync(SearchModel model);
         Task DeleteMoviesAsync();
     }
 }

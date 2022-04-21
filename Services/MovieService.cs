@@ -29,46 +29,94 @@ namespace Photon.Services
             return movie;
         }
 
-        public async Task<List<Movie>?> GetMoviesAsync(SearchModel model)
+        public async Task<List<Movie>?> GetMoviesAsync(SearchModel model, int? page)
         {
-            if(model.title != null)
-            {
-                if(model.genres != null)
-                {
-                    var movies = (from m in await moviesCollection.AsQueryable<Movie>().ToListAsync()
-                                  let filter = string.Join(' ', model!.genres)
-                                  where m!.Title == model!.title && filter.Contains(string.Join(' ', m!.Info!.genres))
-                                  select m).ToList();
+            int index = page != null ? page.Value : 1;
 
-                    return movies;
+            if (model.title != null)
+            {
+                var title = model.title.ToLower();
+
+                if (model.genres != null)
+                {
+                    return (from m in await moviesCollection.AsQueryable<Movie>().ToListAsync()
+                              let filter = string.Join(' ', model!.genres)
+                              where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
+                              select m).ToList().Skip(8 * (index - 1))
+                                .Take(8).ToList();
                 }
 
-                var all = await moviesCollection.Find(m => m.Title == model!.title).ToListAsync();
-                return all;
+                return (await moviesCollection.Find(m => m.Title.ToLower().Contains(title)).ToListAsync())
+                    .Skip(8 * (index - 1)).Take(8).ToList();
             }
             else
             {
-                if(model.genres != null)
+                if (model.genres != null)
                 {
                     var filter = string.Join(' ', model.genres);
 
-                    var list = moviesCollection.AsQueryable<Movie>().ToList()
-                        .Where(m =>
+                    return moviesCollection.AsQueryable<Movie>().ToList()
+                    .Where(m =>
+                    {
+                        if (m!.Info!.genres != null)
                         {
-                            if (m!.Info!.genres != null)
-                            {
-                                var newFilter = string.Join(' ', m!.Info!.genres);
-                                return newFilter.Contains(filter);
-                            }
+                            var newFilter = string.Join(' ', m!.Info!.genres);
+                            return newFilter.Contains(filter);
+                        }
 
-                            return false;
-                        }).ToList();
-
-                    return list;
+                        return false;
+                    }).Skip(8 * (index - 1)).Take(8).ToList();
                 }
-
-                return null;
             }
+
+            return null;
+        }
+
+        public async Task<int> GetMoviesCountAsync(SearchModel model)
+        {
+            int count = 0;
+            int pages = 0;
+
+            if (model.title != null)
+            {
+                var title = model.title.ToLower();
+
+                if (model.genres != null)
+                {
+                    count = (from m in await moviesCollection.AsQueryable<Movie>().ToListAsync()
+                            let filter = string.Join(' ', model!.genres)
+                            where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
+                            select m).Count();
+                }
+                else
+                {
+                    count = (await moviesCollection.Find(m => m.Title.ToLower().Contains(title))
+                        .ToListAsync()).Count();
+                }
+            }
+            else
+            {
+                if (model.genres != null)
+                {
+                    var filter = string.Join(' ', model.genres);
+
+                    count = moviesCollection.AsQueryable<Movie>().ToList()
+                    .Where(m =>
+                    {
+                        if (m!.Info!.genres != null)
+                        {
+                            var newFilter = string.Join(' ', m!.Info!.genres);
+                            return newFilter.Contains(filter);
+                        }
+
+                        return false;
+                    }).Count();
+                }
+            }
+
+            pages = count >> 3;
+            if ((count & 0x7) != 0) pages++;
+            return pages;
         }
 
         public async Task<List<Movie>?> GetMoviesAsync()
