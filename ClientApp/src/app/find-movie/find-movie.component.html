@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-10">
+    <br><br><br><br>
+    <table *ngIf="movies" class="table table-hover">
+      <tbody>
+      <tr style="background-color: #876dc9; color: white;" *ngFor="let movie of movies">
+        <td (click)="WatchMovie(movie.id)"><img src="{{movie.info.image_url}}" width="48" height="48"/></td>
+        <td (click)="WatchMovie(movie.id)">{{movie.title}}</td>
+        <td (click)="WatchMovie(movie.id)">{{movie.info.rank}}</td>
+        <td (click)="WatchMovie(movie.id)">{{movie.year}}</td>
+        <td (click)="WatchMovie(movie.id)"><a id="view" (click)="WatchMovie(movie.id)" class="nav-link text-light"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+      </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!movies.length" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <h4 style="color: #5e2d32;" class="alert-heading">No Results Found!</h4>
+      <p style="color: #282A35;">Check that everything is configured correctly on the server.</p>
+      <hr>
+      <p style="color: #282A35;" class="mb-0">There are not movies recorded, unfortunately!</p>
+      <button type="button" class="btn-close" (click)="Refresh()" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+</div>

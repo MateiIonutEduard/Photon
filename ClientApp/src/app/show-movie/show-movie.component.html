@@ -1,0 +1,58 @@
+<div class="container-fluid" id="main">
+  <div class="row">
+    <div class="col-sm-4"><br><br>
+       <img src="{{movie.info.image_url}}" width="256" height="256" /><br><br>
+    </div>
+    <div class="col-sm-8">
+      <br><br>
+      <div class="row">
+        <div class="col-sm">
+          <h3>{{movie.title}}</h3><br>
+          <h5>{{movie.info.plot}}</h5>
+          <br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <b *ngIf="movie.info.release_date">release date: &nbsp;&nbsp;<b class="text-success">{{movie.info.release_date.toString()}}</b></b><br>
+          <b *ngIf="!movie.info.release_date && movie.year">release date: &nbsp;&nbsp;<b class="text-success">{{movie.year}}</b></b><br>
+          <div *ngIf="movie.info.rating" class="rating">
+            <p>{{movie.info.rating}}</p>&nbsp;&nbsp;<span class="fa fa-star text-warning"></span>
+          </div>
+          <div class="duration">
+            <p>
+              <b style="color: #282A35;">duration</b>:
+              <b class="text-secondary">{{movie.info.running_time_secs}}</b></p>
+          </div>
+        </div>
+        <div class="col" *ngIf="movie.info.genres">
+          <strong>Genres: </strong><br>
+          <span class="genres" *ngFor="let genre of movie.info.genres">
+            <a class="nav-link"><b class="text-primary">{{genre}}</b></a>
+          </span><br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><br>
+<div class="container-fluid" id="third" *ngIf="movie.info.directors || movie.info.actors">
+  <div class="row">
+    <div *ngIf="movie.info.directors" class="col">
+      <span class="directors align-content-center">
+        <b class="text-dark"><br>Directors<br><br></b>
+      </span>
+      <ul class="directors" *ngFor="let director of movie.info.directors">
+            <li><b class="text-primary">{{director}}</b></li>
+      </ul><br>
+    </div>
+    <div class="col" *ngIf="movie.info.actors">
+      <span class="actors">
+        <b class="text-danger"><br>Actors<br><br></b>
+      </span>
+      <ul class="actors" *ngFor="let actor of movie.info.actors">
+            <li><b style="color: #a520da;">{{actor}}</b></li>
+      </ul><br>
+    </div>
+  </div>
+</div>
+<br>

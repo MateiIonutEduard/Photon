@@ -1,0 +1,65 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #2e7bdc;
+}
+
+.fa-eye:hover {
+  transform: scale(1.5);
+  color: #c2acff;
+  cursor: pointer;
+}
+
+.container-fluid {
+  background-color: #b7afaf;
+}
+
+.list-group-item-action {
+  background-color: rgb(172, 146, 241);
+}
+
+.list-group-item-action:hover {
+  color: #1b6ec2;
+  cursor: pointer;
+}
+
+.panel-heading {
+  background-color: #c2acff;
+  text-align: center;
+  color: #936372;
+}
+
+#filter {
+  width: 100%;
+}
+
+.fa-eye:focus {
+  transform: scale(1.5);
+  color: #69359c;
+}
+
+code {
+  color: #e01a76;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.list-group {
+  max-height: 300px;
+  margin-bottom: 10px;
+  overflow:scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  background-color: #c2acff;
+}
+
+.alert-danger {
+  background-color: #b38ff1;
+}

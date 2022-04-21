@@ -1,0 +1,13 @@
+<div class="panel panel-primary" *ngIf="genres" id="result_panel">
+  <div class="panel-heading"><h4 class="panel-title"><b>Genres</b></h4>
+  </div>
+  <div class="panel-body">
+    <ul class="list-group">
+      <li *ngFor="let genre of genres" class="list-group-item list-group-item-action">
+        <input (click)="SelectGenre()" name="check" class="form-check-input" type="checkbox" value="{{genre.name}}" />
+        {{genre.name}}
+      </li>
+    </ul>
+  </div>
+</div><br><br><br><br><br>
+<a class="btn btn-primary" (click)="FindMovies()" id="filter"><b>Search</b></a>
