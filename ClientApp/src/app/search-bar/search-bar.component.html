@@ -1,6 +1,6 @@
 <div class="input-group">
   <div class="form-outline">
-    <input type="search" id="search" placeholder="Search..." class="form-control" />
+    <input type="search" id="search" (keydown)="KeyDown($event)" placeholder="Search..." class="form-control" />
   </div>
   <a type="button" class="btn btn-primary" (click)="SearchMovies()">
     <i class="fa fa-search"></i>

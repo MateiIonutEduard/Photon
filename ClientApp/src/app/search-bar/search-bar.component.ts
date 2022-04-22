@@ -13,6 +13,11 @@ export class SearchBarComponent {
   constructor(private router: Router, private notify: NotifyService, private genreService: GenreService) {
   }
 
+  KeyDown($event: KeyboardEvent) {
+    if ($event.key === "Enter")
+      this.SearchMovies();
+  }
+
   SearchMovies(): void {
     let title: string = (<HTMLInputElement>document.getElementById('search')).value;
     this.genreService.Pop();
