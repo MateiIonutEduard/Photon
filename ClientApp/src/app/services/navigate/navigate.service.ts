@@ -1,21 +1,29 @@
 import { Injectable } from '@angular/core';
 import {Observable, Subject} from "rxjs";
+import {Page} from "../movie/movie.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigateService {
-  private subject: Subject<number>;
+  private subject: Subject<Page>;
 
   constructor() {
-    this.subject = new Subject<number>();
+    this.subject = new Subject<Page>();
   }
 
-  SetPage(pages?: number) {
-    this.subject.next(pages);
+  SetPage(total: any, page: any, pages: any) {
+
+    const obj: Page = {
+      page: page,
+      pages: pages,
+      total: total
+    };
+
+    this.subject.next(obj);
   }
 
-  GetPage(): Observable<number> {
+  GetPage(): Observable<Page> {
     return this.subject.asObservable();
   }
 }

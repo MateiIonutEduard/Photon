@@ -14,11 +14,14 @@ export class FindMovieComponent implements OnDestroy {
   public movies: Movie[] = [];
   private readonly task: any;
 
+  private page: any = 1;
+  private pages: any = 1;
+
   constructor(private movieService: MovieService, private notify: NotifyService, private navigate: NavigateService, private genreService: GenreService, private router: Router) {
     let model = genreService.GetModel();
     movieService.SearchMovies(model).subscribe(res => {
       this.movies = res.movies;
-      navigate.SetPage(res.pages);
+      navigate.SetPage(res.movies.length, 1, res.pages);
 
       for(let k = 0; k < this.movies.length; k++)
       {
@@ -33,21 +36,33 @@ export class FindMovieComponent implements OnDestroy {
 
   UpdateMovies(): any {
     this.notify.GetSignal().subscribe(res => {
-       if(res) {
-         let model = this.genreService.GetModel();
-         this.movieService.SearchMovies(model).subscribe(res => {
-           this.movies = res.movies;
+      if (res == -1) {
+        let model = this.genreService.GetModel();
+        this.movieService.SearchMovies(model).subscribe(res => {
+          this.movies = res.movies;
+          this.navigate.SetPage(res.movies.length,1, res.pages);
 
-           this.navigate.SetPage(res.pages);
-           this.notify.SendSignal(false);
+          for (let k = 0; k < this.movies.length; k++) {
+            let url = this.movies[k].info.image_url;
+            if (url == undefined) this.movies[k].info.image_url = '/assets/cinema.png';
+          }
+        });
+      } else if (res == 1) {
+        this.navigate.GetPage().subscribe(res => {
+          if (this.page != res.page) {
+            this.page = res.page;
+            const model = this.genreService.GetModel();
+            this.movieService.SearchPageMovies(this.page, model).subscribe(res => {
+              this.movies = res.movies;
 
-           for(let k = 0; k < this.movies.length; k++)
-           {
-             let url = this.movies[k].info.image_url;
-             if(url == undefined) this.movies[k].info.image_url = '/assets/cinema.png';
-           }
-         });
-       }
+              for (let k = 0; k < this.movies.length; k++) {
+                let url = this.movies[k].info.image_url;
+                if (url == undefined) this.movies[k].info.image_url = '/assets/cinema.png';
+              }
+            });
+          }
+        });
+      }
     });
   }
 

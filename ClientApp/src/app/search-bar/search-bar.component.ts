@@ -24,7 +24,7 @@ export class SearchBarComponent {
       this.router.navigate(['/find-movie'])
         .then(res => {
           (<HTMLInputElement>document.getElementById('search')).value = '';
-          this.notify.SendSignal(true);
+          this.notify.SendSignal(-1);
         });
     }
   }

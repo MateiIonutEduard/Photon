@@ -1,4 +1,4 @@
-<div class="row">
+<div *ngIf="total" class="row">
   <div class="col-sm-4"></div>
   <div class="col-sm-4">
     <nav aria-label="Navigation">
@@ -10,9 +10,9 @@
         </li>
         <li class="page-item" *ngIf="last != 0"><a class="page-link"><b>{{last}}</b></a></li>
         <li class="page-item disabled"><a id="separator" class="page-link" href="#"><b>{{page}}</b></a></li>
-        <li class="page-item" *ngIf="page != next && page <= pages"><a class="page-link"><b>{{next}}</b></a></li>
+        <li class="page-item" *ngIf="page != next && next <= pages"><a class="page-link"><b>{{next}}</b></a></li>
         <li class="page-item">
-          <a id="next" class="page-link" *ngIf="page <= pages" (click)="NextPage()" aria-label="Next">
+          <a id="next" class="page-link" *ngIf="next <= pages" (click)="NextPage()" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>

@@ -22,7 +22,7 @@ export class HomeComponent implements OnDestroy {
       }
     });
 
-    this.notify.SendSignal(false);
+    this.notify.SendSignal(0);
     this.genreService.Pop();
   }
 

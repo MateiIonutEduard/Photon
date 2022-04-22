@@ -5,17 +5,17 @@ import {Observable, Subject} from "rxjs";
   providedIn: 'root'
 })
 export class NotifyService {
-  private subject: Subject<boolean>;
+  private subject: Subject<number>;
 
   constructor() {
-    this.subject = new Subject<boolean>();
+    this.subject = new Subject<number>();
   }
 
-  SendSignal(signal?: boolean) {
+  SendSignal(signal?: number) {
     this.subject.next(signal);
   }
 
-  GetSignal(): Observable<boolean> {
+  GetSignal(): Observable<number> {
     return this.subject.asObservable();
   }
 }

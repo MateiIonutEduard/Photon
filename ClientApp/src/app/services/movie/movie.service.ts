@@ -37,14 +37,14 @@ export class MovieService {
   SearchPageMovies(page: number, model: SearchModel): Observable<MovieModel> {
     let formData = new FormData();
     if(model.title) formData.append('title', model.title);
-
+    const url: string = `${this.baseUrl}?page=${page}`;
     if(model.genres)
     {
       for(let genre of model.genres)
         formData.append('genres', genre);
     }
 
-    return this.client.post<MovieModel>(this.baseUrl, formData);
+    return this.client.post<MovieModel>(url, formData);
   }
 }
 
@@ -79,4 +79,10 @@ export interface MovieInfo
   rank?: number;
   running_time_secs?: number
   actors: string[];
+}
+
+export interface Page {
+  page: number;
+  pages: number;
+  total: number;
 }
