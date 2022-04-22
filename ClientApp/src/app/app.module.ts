@@ -11,6 +11,7 @@ import { ShowMovieComponent } from './show-movie/show-movie.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { GenresComponent } from './genres/genres.component';
 import { FindMovieComponent } from './find-movie/find-movie.component';
+import { NavigationComponent } from './navigation/navigation.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { FindMovieComponent } from './find-movie/find-movie.component';
     SearchBarComponent,
     GenresComponent,
     FindMovieComponent,
+    NavigationComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

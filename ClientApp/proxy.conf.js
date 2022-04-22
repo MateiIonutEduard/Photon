@@ -7,6 +7,7 @@ const PROXY_CONFIG = [
   {
     context: [
       "/api/movie/",
+      "/api/movie/show/",
       "/api/movie/genre/",
    ],
     target: target,

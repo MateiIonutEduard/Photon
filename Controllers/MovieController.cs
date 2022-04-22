@@ -34,7 +34,7 @@ namespace Photon.Controllers
             var movies = await movieService.GetMoviesAsync(model, page);
             var res = new MovieModel();
 
-            if (movies != null) 
+            if (movies != null)
                 res.movies = movies.ToArray();
 
             if (page == null)

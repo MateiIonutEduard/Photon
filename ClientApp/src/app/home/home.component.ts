@@ -1,6 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Movie, MovieService} from "../services/movie/movie.service";
 import {Router} from "@angular/router";
+import {NotifyService} from "../services/nofity/notify.service";
+import {GenreService} from "../services/genre/genre.service";
 
 @Component({
   selector: 'app-home',
@@ -9,16 +11,19 @@ import {Router} from "@angular/router";
 export class HomeComponent implements OnDestroy {
   public movies: Movie[] = [];
 
-  constructor(private movieService: MovieService, private router: Router) {
+  constructor(private movieService: MovieService, private notify: NotifyService, private  genreService: GenreService, private router: Router) {
     movieService.PopularMovies().subscribe(res => {
       this.movies = res;
 
       for(let k = 0; k < this.movies.length; k++)
       {
-        if(!this.movies[k].info.image_url)
-          this.movies[k].info.image_url = '/assets/cinema.png';
+        let url = this.movies[k].info.image_url;
+        if(url == undefined) this.movies[k].info.image_url = '/assets/cinema.png';
       }
     });
+
+    this.notify.SendSignal(false);
+    this.genreService.Pop();
   }
 
   ViewMovie(id: string): void {

@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Movie, MovieService} from "../services/movie/movie.service";
 import {Router} from "@angular/router";
 import {GenreService} from "../services/genre/genre.service";
+import {NavigateService} from "../services/navigate/navigate.service";
+import {NotifyService} from "../services/nofity/notify.service";
 
 @Component({
   selector: 'app-find-movie',
@@ -10,17 +12,42 @@ import {GenreService} from "../services/genre/genre.service";
 })
 export class FindMovieComponent implements OnDestroy {
   public movies: Movie[] = [];
+  private readonly task: any;
 
-  constructor(private movieService: MovieService, genreService: GenreService, private router: Router) {
+  constructor(private movieService: MovieService, private notify: NotifyService, private navigate: NavigateService, private genreService: GenreService, private router: Router) {
     let model = genreService.GetModel();
     movieService.SearchMovies(model).subscribe(res => {
-      this.movies = res;
+      this.movies = res.movies;
+      navigate.SetPage(res.pages);
 
       for(let k = 0; k < this.movies.length; k++)
       {
-        if(!this.movies[k].info.image_url)
-          this.movies[k].info.image_url = '/assets/cinema.png';
+        let url = this.movies[k].info.image_url;
+        if(url == undefined) this.movies[k].info.image_url = '/assets/cinema.png';
       }
+    });
+
+    this.task = setInterval(() => this.UpdateMovies(),
+      50);
+  }
+
+  UpdateMovies(): any {
+    this.notify.GetSignal().subscribe(res => {
+       if(res) {
+         let model = this.genreService.GetModel();
+         this.movieService.SearchMovies(model).subscribe(res => {
+           this.movies = res.movies;
+
+           this.navigate.SetPage(res.pages);
+           this.notify.SendSignal(false);
+
+           for(let k = 0; k < this.movies.length; k++)
+           {
+             let url = this.movies[k].info.image_url;
+             if(url == undefined) this.movies[k].info.image_url = '/assets/cinema.png';
+           }
+         });
+       }
     });
   }
 
@@ -37,5 +64,6 @@ export class FindMovieComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.movies = [];
+    clearInterval(this.task);
   }
 }

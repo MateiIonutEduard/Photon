@@ -21,7 +21,7 @@ export class MovieService {
       return this.client.get<Movie[]>(this.baseUrl);
   }
 
-  SearchMovies(model: SearchModel): Observable<Movie[]> {
+  SearchMovies(model: SearchModel): Observable<MovieModel> {
     let formData = new FormData();
     if(model.title) formData.append('title', model.title);
 
@@ -31,8 +31,27 @@ export class MovieService {
         formData.append('genres', genre);
     }
 
-    return this.client.post<Movie[]>(this.baseUrl, formData);
+    return this.client.post<MovieModel>(this.baseUrl, formData);
   }
+
+  SearchPageMovies(page: number, model: SearchModel): Observable<MovieModel> {
+    let formData = new FormData();
+    if(model.title) formData.append('title', model.title);
+
+    if(model.genres)
+    {
+      for(let genre of model.genres)
+        formData.append('genres', genre);
+    }
+
+    return this.client.post<MovieModel>(this.baseUrl, formData);
+  }
+}
+
+export interface MovieModel
+{
+  pages?: number,
+  movies: Movie[];
 }
 
 export interface SearchModel

@@ -35,6 +35,7 @@ export class GenreService {
   }
 
   Pop(): void {
+    this.model.title = undefined;
     this.model.genres = [];
   }
 }

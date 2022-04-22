@@ -1,6 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
 import {Genre, GenreService} from "../services/genre/genre.service";
 import {Router} from "@angular/router";
+import {SearchModel} from "../services/movie/movie.service";
 
 @Component({
   selector: 'app-genres',
@@ -30,8 +31,12 @@ export class GenresComponent implements OnDestroy {
   }
 
   FindMovies(): void {
-    this.router.navigate(['/find-movie'])
-      .then(res => console.log(res));
+    let model: SearchModel = this.genreService.GetModel();
+
+    if(model.title || model.genres?.length) {
+      this.router.navigate(['/find-movie'])
+        .then(res => console.log(res));
+    }
   }
 
   ngOnDestroy() {
