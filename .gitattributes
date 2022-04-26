@@ -40,8 +40,11 @@ ClientApp/src/app/services/nofity/notify.service.spec.ts linguist-vendored
 ClientApp/src/app/services/navigate/navigate.service.spec.ts linguist-vendored
 ClientApp/src/app/services/movie/movie.service.spec.ts linguist-vendored
 ClientApp/src/app/find-movie/find-movie.component.spec.ts linguist-vendored
+ClientApp/src/environments/environment.ts linguist-vendored
 ClientApp/src/app/app.server.module.ts linguist-vendored
+ClientApp/src/environments/environment.prod.ts linguist-vendored
 ClientApp/src/polyfills.ts linguist-vendored
+ClientApp/src/test.ts linguist-vendored
 ClientApp/src/main.ts linguist-vendored
 ###############################################################################
 # behavior for image files
