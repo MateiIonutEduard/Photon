@@ -31,7 +31,7 @@ namespace Photon.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchMovies([FromQuery]int? page, [FromForm]SearchModel model)
         {
-            var movies = await movieService.GetMoviesAsync(model, page);
+            var movies = await movieService.FindMoviesAsync(model, page);
             var res = new MovieModel();
 
             if (movies != null)

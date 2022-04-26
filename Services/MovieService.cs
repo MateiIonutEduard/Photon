@@ -26,6 +26,7 @@ namespace Photon.Services
         public async Task<Movie?> GetMovieAsync(string id) 
         {
             var movie = await moviesCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            movie.Info.image_url = await GetMovieProfileAsync(movie.Id);
             return movie;
         }
 
@@ -72,6 +73,19 @@ namespace Photon.Services
             return null;
         }
 
+        public async Task<List<Movie>?> FindMoviesAsync(SearchModel model, int? page)
+        {
+            var list = await GetMoviesAsync(model, page);
+
+            foreach(var movie in list)
+            {
+                var image_url = await GetMovieProfileAsync(movie.Id);
+                movie.Info.image_url = image_url;
+            }
+
+            return list;
+        }
+
         public async Task<int> GetMoviesCountAsync(SearchModel model)
         {
             int count = 0;
@@ -84,8 +98,8 @@ namespace Photon.Services
                 if (model.genres != null)
                 {
                     count = (from m in await moviesCollection.AsQueryable<Movie>().ToListAsync()
-                            let filter = string.Join(' ', model!.genres)
-                            where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
+                             let filter = string.Join(' ', model!.genres)
+                             where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
                             select m).Count();
                 }
                 else
@@ -126,7 +140,32 @@ namespace Photon.Services
                 Limit(4)
                 .ToListAsync();
 
+            foreach (var movie in movies)
+                movie.Info.image_url = await GetMovieProfileAsync(movie.Id);
+
             return movies;
+        }
+
+        public async Task<string> GetMovieProfileAsync(string id)
+        {
+            var movie = await moviesCollection.Find(m => m.Id == id)
+                .FirstOrDefaultAsync();
+
+            if(movie != null)
+            {
+                var img = movie.Info.image_url;
+
+                if(!string.IsNullOrEmpty(img))
+                {
+                    var client = new HttpClient();
+                    var res = await client.GetAsync(movie.Info.image_url);
+
+                    if(res.IsSuccessStatusCode)
+                        return movie.Info.image_url;
+                }
+            }
+
+            return null;
         }
 
         public async Task DeleteMoviesAsync() =>
