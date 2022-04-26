@@ -34,7 +34,10 @@
 #*.modelproj merge=binary
 #*.sqlproj   merge=binary
 #*.wwaproj   merge=binary
-
+ClientApp/src/app/app.module.ts linguist-vendored
+ClientApp/src/app/navigation/navigation.component.spec.ts linguist-vendored
+ClientApp/src/app/services/nofity/notify.service.spec.ts linguist-vendored
+ClientApp/src/app/services/navigate/navigate.service.spec.ts linguist-vendored
 ###############################################################################
 # behavior for image files
 #
