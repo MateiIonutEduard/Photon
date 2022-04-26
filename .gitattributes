@@ -38,6 +38,8 @@ ClientApp/src/app/app.module.ts linguist-vendored
 ClientApp/src/app/navigation/navigation.component.spec.ts linguist-vendored
 ClientApp/src/app/services/nofity/notify.service.spec.ts linguist-vendored
 ClientApp/src/app/services/navigate/navigate.service.spec.ts linguist-vendored
+ClientApp/src/app/show-movie/show-movie.component.spec.ts linguist-vendored
+ClientApp/src/app/services/genre/genre.service.spec.ts linguist-vendored
 ClientApp/src/app/services/movie/movie.service.spec.ts linguist-vendored
 ClientApp/src/app/find-movie/find-movie.component.spec.ts linguist-vendored
 ClientApp/src/environments/environment.ts linguist-vendored
