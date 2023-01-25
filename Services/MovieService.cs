@@ -76,6 +76,7 @@ namespace Photon.Services
         public async Task<List<Movie>?> FindMoviesAsync(SearchModel model, int? page)
         {
             var list = await GetMoviesAsync(model, page);
+            if (list == null) list = new List<Movie>();
 
             foreach(var movie in list)
             {

@@ -21,17 +21,42 @@ export class GenreService {
     return this.client.get<Genre[]>(this.baseUrl);
   }
 
+  SetModel(): void {
+    if (this.model.title || this.model.genres?.length) {
+      let title: string | undefined = this.model.title;
+      let typeOf: string | undefined = this.model.genres?.join(",");
+
+      if (title) localStorage.setItem("title", title);
+      if(typeOf) localStorage.setItem("genres", typeOf);
+    }
+  }
+
   GetModel(): SearchModel {
-      return this.model;
+    console.log(this.model);
+    if (this.model.title == '' || !this.model.genres?.length) {
+      let title: string | null = localStorage.getItem("title");
+      if (title) this.model.title = title;
+
+      let all: string | null = localStorage.getItem("genres");
+
+      if (all) {
+        let genres: string[] | undefined = all.split(",");
+        this.model.genres = genres;
+      }
+    }
+
+    return this.model;
   }
 
   SetTitle(title: string): void {
     this.model.title = title;
+    this.SetModel();
   }
 
   Push(genre: string): void {
     let of = this.model.genres?.indexOf(genre);
-    if(of == -1) this.model.genres?.push(genre);
+    if (of == -1) this.model.genres?.push(genre);
+    this.SetModel();
   }
 
   Pop(): void {
