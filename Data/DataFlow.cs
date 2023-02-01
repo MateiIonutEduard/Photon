@@ -11,8 +11,7 @@ namespace Photon.Data
             var buffer = File.ReadAllText("moviedata.json");
             var movies = JsonConvert.DeserializeObject<Movie[]?>(buffer);
             var db = serviceProvider.GetRequiredService<IMovieService>();
-            await db.DeleteMoviesAsync();
-            await db.CreateMoviesAsync(movies);
+            await db.UpdateIfExistsOrCreate(movies);
         }
     }
 }

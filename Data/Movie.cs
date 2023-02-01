@@ -6,9 +6,6 @@ namespace Photon.Data
 {
     public class Movie
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
         [BsonElement("year"), JsonPropertyName("year")]
         public int Year { get; set; }
         [BsonElement("title"), JsonPropertyName("title"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

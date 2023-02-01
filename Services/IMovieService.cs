@@ -5,12 +5,11 @@ namespace Photon.Services
 {
     public interface IMovieService
     {
-        Task<List<Movie>?> GetMoviesAsync();
-        Task<Movie?> GetMovieAsync(string id);
-        Task CreateMoviesAsync(Movie[]? movies);
-        Task<List<Movie>?> GetMoviesAsync(SearchModel model, int? page);
-        Task<List<Movie>?> FindMoviesAsync(SearchModel model, int? page);
+        Task<List<MovieRecord>?> GetMoviesAsync();
+        Task<MovieRecord?> GetMovieAsync(string id);
+        Task UpdateIfExistsOrCreate(Movie[]? movies);
+        Task<List<MovieRecord>?> GetMoviesAsync(SearchModel model, int? page);
+        Task<List<MovieRecord>?> FindMoviesAsync(SearchModel model, int? page);
         Task<int> GetMoviesCountAsync(SearchModel model);
-        Task DeleteMoviesAsync();
     }
 }

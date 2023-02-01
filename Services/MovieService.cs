@@ -6,31 +6,34 @@ using Newtonsoft.Json;
 using Photon.Data;
 using Photon.Models;
 using Microsoft.Extensions.Options;
+using System.Security.Cryptography;
+using System.Text;
+using Hyldahl.Hashing.SpamSum;
 #pragma warning disable
 
 namespace Photon.Services
 {
     public class MovieService : IMovieService
     {
-        private readonly IMongoCollection<Movie> moviesCollection;
+        private readonly IMongoCollection<MovieRecord> moviesCollection;
 
         public MovieService(IOptions<MovieSettings> movieSettings)
         {
             var mongoClient = new MongoClient(movieSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(movieSettings.Value.DatabaseName);
 
-            moviesCollection = mongoDatabase.GetCollection<Movie>(
+            moviesCollection = mongoDatabase.GetCollection<MovieRecord>(
                 movieSettings.Value.MoviesCollectionName);
         }
 
-        public async Task<Movie?> GetMovieAsync(string id) 
+        public async Task<MovieRecord?> GetMovieAsync(string id) 
         {
             var movie = await moviesCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
             movie.Info.image_url = await GetMovieProfileAsync(movie.Id);
             return movie;
         }
 
-        public async Task<List<Movie>?> GetMoviesAsync(SearchModel model, int? page)
+        public async Task<List<MovieRecord>?> GetMoviesAsync(SearchModel model, int? page)
         {
             int index = page != null ? page.Value : 1;
 
@@ -40,7 +43,7 @@ namespace Photon.Services
 
                 if (model.genres != null)
                 {
-                    return (from m in await moviesCollection.AsQueryable<Movie>().ToListAsync()
+                    return (from m in await moviesCollection.AsQueryable<MovieRecord>().ToListAsync()
                               let filter = string.Join(' ', model!.genres)
                               where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
                               select m).ToList().Skip(8 * (index - 1))
@@ -56,7 +59,7 @@ namespace Photon.Services
                 {
                     var filter = string.Join(' ', model.genres);
 
-                    return moviesCollection.AsQueryable<Movie>().ToList()
+                    return moviesCollection.AsQueryable<MovieRecord>().ToList()
                     .Where(m =>
                     {
                         if (m!.Info!.genres != null)
@@ -73,10 +76,10 @@ namespace Photon.Services
             return null;
         }
 
-        public async Task<List<Movie>?> FindMoviesAsync(SearchModel model, int? page)
+        public async Task<List<MovieRecord>?> FindMoviesAsync(SearchModel model, int? page)
         {
             var list = await GetMoviesAsync(model, page);
-            if (list == null) list = new List<Movie>();
+            if (list == null) list = new List<MovieRecord>();
 
             foreach(var movie in list)
             {
@@ -98,7 +101,7 @@ namespace Photon.Services
 
                 if (model.genres != null)
                 {
-                    count = (from m in await moviesCollection.AsQueryable<Movie>().ToListAsync()
+                    count = (from m in await moviesCollection.AsQueryable<MovieRecord>().ToListAsync()
                              let filter = string.Join(' ', model!.genres)
                              where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
                             select m).Count();
@@ -115,7 +118,7 @@ namespace Photon.Services
                 {
                     var filter = string.Join(' ', model.genres);
 
-                    count = moviesCollection.AsQueryable<Movie>().ToList()
+                    count = moviesCollection.AsQueryable<MovieRecord>().ToList()
                     .Where(m =>
                     {
                         if (m!.Info!.genres != null)
@@ -134,7 +137,7 @@ namespace Photon.Services
             return pages;
         }
 
-        public async Task<List<Movie>?> GetMoviesAsync()
+        public async Task<List<MovieRecord>?> GetMoviesAsync()
         {
             var movies = await moviesCollection.Find(_ => true).
                 SortByDescending(m => m.Year).
@@ -169,9 +172,69 @@ namespace Photon.Services
             return null;
         }
 
-        public async Task DeleteMoviesAsync() =>
-            await moviesCollection.DeleteManyAsync(_ => true);
-        public async Task CreateMoviesAsync(Movie[]? movies) => 
-            await moviesCollection.InsertManyAsync(movies);
+        public async Task UpdateIfExistsOrCreate(Movie[]? movies)
+        {
+            var all = FromMovies(movies);
+
+            for (int i = 0; i < all.Length; i++)
+            {
+                var item = moviesCollection.Find(m => m.Title == all[i].Title)
+                    .ToEnumerable().Where(m => CompareHash(all[i].FuzzyHash, m.FuzzyHash))
+                    .FirstOrDefault();
+
+                if (item != null)
+                {
+                    if (all[i].FuzzyHash.CompareTo(item.FuzzyHash) != 0)
+                    {
+                        all[i].Id = item.Id;
+                        all[i].CreatedAt = item.CreatedAt;
+                        all[i].UpdatedAt = DateTime.Now;
+                        await moviesCollection.ReplaceOneAsync(m => m.Title == all[i].Title, all[i]);
+                    }
+                }
+                else
+                {
+                    all[i].CreatedAt = DateTime.Now;
+                    all[i].UpdatedAt = DateTime.Now;
+                    await moviesCollection.InsertOneAsync(all[i]);
+                }
+            }
+        }
+
+        private MovieRecord[] FromMovies(Movie[] movies)
+        {
+            var list = new List<MovieRecord>();
+
+            for (int j = 0; j < movies.Length; j++)
+            {
+                var item = new MovieRecord
+                {
+                    Year = movies[j].Year,
+                    Title = movies[j].Title,
+                    Info = movies[j].Info,
+                    FuzzyHash = GetHash(movies[j])
+                };
+
+                list.Add(item);
+            }
+
+            return list.ToArray();
+        }
+
+        private bool CompareHash(string left, string right)
+        {
+            var lh = new SpamSumSignature(left);
+            var rh = new SpamSumSignature(right);
+            return FuzzyHashing.Compare(lh, rh) > 0;
+        }
+
+        private string? GetHash(Movie? movie)
+        {
+            string data = JsonConvert.SerializeObject(movie);
+            MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(data));
+
+            var hash = FuzzyHashing.Calculate(ms);
+            return hash.ToString();
+        }
     }
 }

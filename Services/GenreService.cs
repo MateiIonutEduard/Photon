@@ -8,13 +8,13 @@ namespace Photon.Services
 {
     public class GenreService : IGenreService
     {
-        private readonly IMongoCollection<Movie> moviesCollection;
+        private readonly IMongoCollection<MovieRecord> moviesCollection;
         public GenreService(IOptions<MovieSettings> movieSettings)
         {
             var mongoClient = new MongoClient(movieSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(movieSettings.Value.DatabaseName);
 
-            moviesCollection = mongoDatabase.GetCollection<Movie>(
+            moviesCollection = mongoDatabase.GetCollection<MovieRecord>(
                 movieSettings.Value.MoviesCollectionName);
         }
         public async Task<List<GenreModel>> AllGenres()
