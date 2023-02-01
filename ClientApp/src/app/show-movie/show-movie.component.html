@@ -1,4 +1,4 @@
-<div class="container-fluid" id="main">
+<div class="container-fluid" id="main" *ngIf="movie">
   <div class="row">
     <div class="col-sm-4"><br><br>
        <img src="{{movie.info.image_url}}" width="256" height="256" /><br><br>
@@ -35,7 +35,7 @@
     </div>
   </div>
 </div><br>
-<div class="container-fluid" id="third" *ngIf="movie.info.directors || movie.info.actors">
+<div class="container-fluid" id="third" *ngIf="movie">
   <div class="row">
     <div *ngIf="movie.info.directors" class="col">
       <span class="directors align-content-center">

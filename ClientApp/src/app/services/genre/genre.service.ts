@@ -32,7 +32,6 @@ export class GenreService {
   }
 
   GetModel(): SearchModel {
-    console.log(this.model);
     if (this.model.title == '' || !this.model.genres?.length) {
       let title: string | null = localStorage.getItem("title");
       if (title) this.model.title = title;
@@ -46,6 +45,11 @@ export class GenreService {
     }
 
     return this.model;
+  }
+
+  Clear(): void {
+    if (localStorage.getItem("title") != null) localStorage.removeItem("title");
+    if (localStorage.getItem("genres") != null) localStorage.removeItem("genres");
   }
 
   SetTitle(title: string): void {

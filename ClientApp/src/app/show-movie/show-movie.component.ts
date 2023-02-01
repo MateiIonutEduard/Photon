@@ -14,7 +14,7 @@ export class ShowMovieComponent implements OnDestroy {
     this.id = "";
     let id = localStorage.getItem('id');
     if(id != null) this.id = id;
-
+    
     if(id != null) {
       this.movieService.GetMovie(this.id).subscribe(res => {
         this.movie = res;

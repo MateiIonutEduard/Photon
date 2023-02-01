@@ -11,7 +11,8 @@ import {GenreService} from "../services/genre/genre.service";
 export class HomeComponent implements OnDestroy {
   public movies: Movie[] = [];
 
-  constructor(private movieService: MovieService, private notify: NotifyService, private  genreService: GenreService, private router: Router) {
+  constructor(private movieService: MovieService, private notify: NotifyService, private genreService: GenreService, private router: Router) {
+    genreService.Clear();
     movieService.PopularMovies().subscribe(res => {
       this.movies = res;
 

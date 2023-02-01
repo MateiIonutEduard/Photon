@@ -22,7 +22,7 @@ export class FindMovieComponent implements OnDestroy {
     movieService.SearchMovies(model).subscribe(res => {
       this.movies = res.movies;
       navigate.SetPage(res.movies.length, 1, res.pages);
-
+      
       for(let k = 0; k < this.movies.length; k++)
       {
         let url = this.movies[k].info.image_url;
@@ -41,7 +41,7 @@ export class FindMovieComponent implements OnDestroy {
         this.movieService.SearchMovies(model).subscribe(res => {
           this.movies = res.movies;
           this.navigate.SetPage(res.movies.length,1, res.pages);
-
+          
           for (let k = 0; k < this.movies.length; k++) {
             let url = this.movies[k].info.image_url;
             if (url == undefined) this.movies[k].info.image_url = '/assets/cinema.png';
@@ -67,6 +67,9 @@ export class FindMovieComponent implements OnDestroy {
   }
 
   WatchMovie(id: string): void {
+    if (localStorage.getItem('id'))
+      localStorage.removeItem('id');
+
     localStorage.setItem('id', id);
     this.router.navigate(['/show-movie'])
       .then(res => console.log(res));

@@ -18,7 +18,7 @@ export class MovieService {
   }
 
   PopularMovies(): Observable<Movie[]> {
-      return this.client.get<Movie[]>(this.baseUrl);
+    return this.client.get<Movie[]>(this.baseUrl);
   }
 
   SearchMovies(model: SearchModel): Observable<MovieModel> {
@@ -66,6 +66,9 @@ export interface Movie
   title: string;
   year: number;
   info: MovieInfo;
+  fuzzyHash: string;
+  CreatedAt?: Date;
+  UpdatedAt?: Date;
 }
 
 export interface MovieInfo
