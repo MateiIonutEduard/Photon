@@ -26,6 +26,45 @@ namespace Photon.Services
                 movieSettings.Value.MoviesCollectionName);
         }
 
+        public async Task<List<MovieRecord>?> GetAllMovies(int? page, bool latest)
+        {
+            var list = new List<MovieRecord>();
+            int index = page != null ? page.Value : 1;
+
+            if(latest)
+            {
+                list = (from m in await moviesCollection.AsQueryable<MovieRecord>().ToListAsync()
+                        where m.UpdatedAt > m.CreatedAt
+                        select m).ToList().Skip(8 * (index - 1)).Take(8).ToList();
+            }
+            else
+            {
+                list = (await moviesCollection.Find(_ => true)
+                    .ToListAsync()).Skip(8 * (index - 1)).Take(8).ToList();
+            }
+
+            return list;
+        }
+
+        public async Task<int> GetAllMoviesCountAsync(bool latest)
+        {
+            int count = 0;
+
+            if(latest)
+            {
+                count = (from m in await moviesCollection.AsQueryable<MovieRecord>().ToListAsync()
+                         where m.UpdatedAt > m.CreatedAt
+                         select m).Count();
+            }
+            else
+            {
+                count = (await moviesCollection.Find(_ => true)
+                    .ToListAsync()).Count();
+            }
+
+            return count;
+        }
+
         public async Task<MovieRecord?> GetMovieAsync(string id) 
         {
             var movie = await moviesCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
@@ -195,7 +234,7 @@ namespace Photon.Services
                 else
                 {
                     all[i].CreatedAt = DateTime.Now;
-                    all[i].UpdatedAt = DateTime.Now;
+                    all[i].UpdatedAt = all[i].CreatedAt;
                     await moviesCollection.InsertOneAsync(all[i]);
                 }
             }

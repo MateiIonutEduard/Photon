@@ -8,6 +8,8 @@ namespace Photon.Models
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? pages { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? movies_count { get; set; }
         public MovieRecord[]? movies { get; set; }
     }
 }
