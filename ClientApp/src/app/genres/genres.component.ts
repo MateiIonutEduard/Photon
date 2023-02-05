@@ -32,13 +32,14 @@ export class GenresComponent implements OnDestroy {
   }
 
   FindMovies(): void {
-    let title: string = (<HTMLInputElement>document.getElementById('search')).value;
-    if (title) this.genreService.SetTitle(title);
+    let titleBar: HTMLInputElement = <HTMLInputElement>document.getElementById('search');
+    if (titleBar.value) this.genreService.SetTitle(titleBar.value);
     let model: SearchModel = this.genreService.GetModel();
-    console.log(model);
+    
     if(model.title || model.genres?.length) {
       this.router.navigate(['/find-movie'])
         .then(res => {
+          titleBar.value = '';
           this.notify.SendSignal(-1);
         });
     }

@@ -82,9 +82,10 @@ namespace Photon.Services
 
                 if (model.genres != null)
                 {
+                    string filter = string.Join(' ', model.genres);
+
                     return (from m in await moviesCollection.AsQueryable<MovieRecord>().ToListAsync()
-                              let filter = string.Join(' ', model!.genres)
-                              where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
+                            where m!.Title.ToLower().Contains(title) && string.Join(' ', m!.Info!.genres).Contains(filter)
                               select m).ToList().Skip(8 * (index - 1))
                                 .Take(8).ToList();
                 }
@@ -140,9 +141,10 @@ namespace Photon.Services
 
                 if (model.genres != null)
                 {
+                    string filter = filter = string.Join(' ', model.genres);
+
                     count = (from m in await moviesCollection.AsQueryable<MovieRecord>().ToListAsync()
-                             let filter = string.Join(' ', model!.genres)
-                             where m!.Title.ToLower().Contains(title) && filter.Contains(string.Join(' ', m!.Info!.genres))
+                             where m!.Title.ToLower().Contains(title) && string.Join(' ', m!.Info!.genres).Contains(filter)
                             select m).Count();
                 }
                 else
