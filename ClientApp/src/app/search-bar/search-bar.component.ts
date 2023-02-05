@@ -20,7 +20,9 @@ export class SearchBarComponent {
 
   SearchMovies(): void {
     let title: string = (<HTMLInputElement>document.getElementById('search')).value;
+    let route: number | undefined = location.href.indexOf('find-movie');
 
+    if (route === undefined) this.genreService.Pop();
     if(title) this.genreService.SetTitle(title);
     const model = this.genreService.GetModel();
 
