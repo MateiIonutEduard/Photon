@@ -14,7 +14,7 @@
       </div>
       <div class="row">
         <div class="col">
-          <b *ngIf="movie.info.release_date">release date: &nbsp;&nbsp;<b class="text-success">{{movie.info.release_date.toString()}}</b></b><br>
+          <b *ngIf="movie.info.release_date">release date: &nbsp;&nbsp;<b class="text-success">{{movie.info.release_date | date: "dd-MM-yyyy"}}</b></b><br>
           <b *ngIf="!movie.info.release_date && movie.year">release date: &nbsp;&nbsp;<b class="text-success">{{movie.year}}</b></b><br>
           <div *ngIf="movie.info.rating" class="rating">
             <p>{{movie.info.rating}}</p>&nbsp;&nbsp;<span class="fa fa-star text-warning"></span>
