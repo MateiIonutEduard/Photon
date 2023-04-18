@@ -1,5 +1,3 @@
-Photon
-
 ## Description
 This application is a test for processing a json dataset using ASP.NET Core, Angular and MongoDB.<br>
 The application is the result of a test for processing using MongoDB compared to SQL databases.
